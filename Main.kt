@@ -1,11 +1,11 @@
 package calculator
 
+import java.math.BigDecimal
 import java.util.*
-import kotlin.math.pow
 import kotlin.system.exitProcess
 
 
-val variablesList = mutableMapOf<String, Double>() //holds the values of all variables
+val variablesList = mutableMapOf<String, BigDecimal>() //holds the values of all variables
 
 class SystemInfo{
     val textHelp = "Program performs mathematical calculations"
@@ -56,7 +56,7 @@ class Variables {
 
     fun addNewVariables(input: String) {
         val newVariables = format(input)
-        variablesList[newVariables[0]] = newVariables[1].toInt().toDouble()
+        variablesList[newVariables[0]] = newVariables[1].toBigDecimal()
     }
 
     private fun format(input: String): List<String>{
@@ -65,7 +65,7 @@ class Variables {
 
     fun compare(input: String){  //function checks if the variable exists
         if (variablesList.containsKey(input.trim())) {
-            println(variablesList[input.trim()]?.toInt())
+            println(variablesList[input.trim()]?.toBigInteger())
         } else println(SystemInfo().textVariables)
     }
 
@@ -73,7 +73,7 @@ class Variables {
         val  test = format(input)
         val secondVariables = test[1]
         if (variablesList.containsKey(secondVariables)) {
-            val newInput = test[0]+"="+ variablesList[secondVariables]!!.toInt()
+            val newInput = test[0]+"="+ variablesList[secondVariables]!!.toBigInteger()
             addNewVariables(newInput)
         } else{
             if (test[0].contains(Regex("\\d+"))) { println(SystemInfo().textIdentifier) }
@@ -87,7 +87,7 @@ class Variables {
         var inputChange = input
         for (i in inputList) {
             if (variablesList.containsKey(i)) {
-                inputChange = inputChange.replace(Regex(i), variablesList[i]?.toInt().toString())
+                inputChange = inputChange.replace(Regex(i), variablesList[i]?.toBigInteger().toString())
             } else {
                 println(SystemInfo().textVariables)
                 return
@@ -115,7 +115,7 @@ class Calculate(private val calculateList: String) {
         }
         convertToRPN(expression)
         val result = evaluateRPN()
-        println(result.toInt())
+        println(result.toBigInteger())
     }
 
     private fun convertToRPN(expression: String) { //  the function puts the mathematical expression in the correct order store in outputQueue
@@ -133,7 +133,7 @@ class Calculate(private val calculateList: String) {
             when {
                 char.isDigit() -> {
                     val number = expression.substring(index).takeWhile { it.isDigit() || it == '.' }
-                    output.add(number.toDouble())
+                    output.add(number.toBigDecimal())
                     index += number.length - 1
                 }
 
@@ -179,12 +179,12 @@ class Calculate(private val calculateList: String) {
         outputQueue.addAll(output)
     }
 
-    private fun evaluateRPN(): Double { //Function takes the operands from the outputQueue and pushes them onto a stack.
+    private fun evaluateRPN(): BigDecimal { //Function takes the operands from the outputQueue and pushes them onto a stack.
         // When a character is encountered, the values of "operand2" and "operand1" are popped from the stack, and then the program proceeds  mathOperation.
-        val stack = Stack<Double>()
+        val stack = Stack<BigDecimal>()
         for (element in outputQueue) {
             when (element) {
-                is Double -> stack.push(element)
+                is BigDecimal -> stack.push(element)
                 is Char -> {
                     val operand2 = stack.pop()
                     val operand1 = stack.pop()
@@ -196,16 +196,16 @@ class Calculate(private val calculateList: String) {
         return stack.pop()
     }
 
-    private fun mathOperation(operator: Char, operand1: Double, operand2: Double): Double {
+    private fun mathOperation(operator: Char, operand1: BigDecimal, operand2: BigDecimal): BigDecimal {
         return when (operator) {
             '+' -> operand1 + operand2 // addition
             '&' -> operand1 - operand2  // subtraction
             '*' -> operand1 * operand2 // multiplication
             '/' -> operand1 / operand2 // division
-            '^' -> operand1.pow(operand2) // power
+            '^' -> operand1.pow(operand2.toBigInteger().toInt()) // power
             else -> {
                 println(SystemInfo().textExpression)
-                return 0.0
+                return 0.toBigDecimal()
             }
         }
     }
