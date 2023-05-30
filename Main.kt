@@ -183,7 +183,6 @@ class Calculate(private val calculateList: String) {
         // When a character is encountered, the values of "operand2" and "operand1" are popped from the stack, and then the program proceeds  mathOperation.
         val stack = Stack<Double>()
         for (element in outputQueue) {
-            println(outputQueue)
             when (element) {
                 is Double -> stack.push(element)
                 is Char -> {
